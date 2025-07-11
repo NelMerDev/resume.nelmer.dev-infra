@@ -1,9 +1,9 @@
 # Terraform state
 .terraform/
 *.tfstate
-*.tfstate.backup
-*.tfstate.*.backup
+*.backup
 .terraform.lock.hcl
+builds/
 
 # Zip or build files
 *.zip

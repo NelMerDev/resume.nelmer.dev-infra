@@ -5,6 +5,7 @@
 .terraform.lock.hcl
 builds/
 *.bk
+outputs.tf
 
 # Zip or build files
 *.zip

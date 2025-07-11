@@ -4,6 +4,7 @@
 *.backup
 .terraform.lock.hcl
 builds/
+*.bk
 
 # Zip or build files
 *.zip

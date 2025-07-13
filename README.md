@@ -36,6 +36,7 @@ This repository contains the complete **Infrastructure as Code (IaC)** setup usi
          -> API Gateway 
          -> Lambda 
          -> DynamoDB ]
+```
 
 ---
 

@@ -23,7 +23,6 @@ This repository contains the complete **Infrastructure as Code (IaC)** setup usi
 | **Terraform**    | Uses official `terraform-aws-modules` for clean, scalable IaC               |
 | **GitHub Actions** | Automatically deploys resume updates to S3 on each commit to `main`       |
 
----
 
 ## 🧱 Architecture Diagram
 
@@ -38,7 +37,6 @@ This repository contains the complete **Infrastructure as Code (IaC)** setup usi
          -> DynamoDB ]
 ```
 
----
 
 ## 🛠️ Technologies Used
 
@@ -51,7 +49,6 @@ This repository contains the complete **Infrastructure as Code (IaC)** setup usi
 - **IAM** – Role-based access control
 - **GitHub Actions** – CI/CD for S3 deployment
 
----
 
 ## ⚙️ GitHub Actions CI/CD
 
@@ -59,22 +56,22 @@ This repo includes a GitHub Actions workflow that **automatically uploads your s
 
 > CI/CD Workflow File: `.github/workflows/deploy.yml`
 
----
 
 ## 📁 Project Structure
 
+```plaintext
 .
-├── main.tf # Root Terraform configuration
-├── variables.tf # Input variables
-├── outputs.tf # Outputs for Lambda/API Gateway/S3
+├── main.tf                 # Root Terraform configuration
+├── variables.tf            # Input variables
+├── outputs.tf              # Outputs for Lambda/API Gateway/S3
 ├── lambda_functions/
-│ └── VisitorCounter/ # JS Lambda source code for visitor counter
+│   └── VisitorCounter/     # JS Lambda source code for visitor counter
 ├── .github/
-│ └── workflows/
-│ └── deploy.yml # GitHub Actions for CI/CD to S3
-└── README.md # You're here
+│   └── workflows/
+│       └── deploy.yml      # GitHub Actions for CI/CD to S3
+└── README.md               # You're here
+```
 
----
 
 ## 🧑‍💻 Skills Demonstrated
 
@@ -86,7 +83,6 @@ This repo includes a GitHub Actions workflow that **automatically uploads your s
 ✅ Static hosting with S3  
 ✅ Production-ready Infrastructure as Code
 
----
 
 ## 🚧 Future Enhancements
 
@@ -95,7 +91,6 @@ This repo includes a GitHub Actions workflow that **automatically uploads your s
 - Add unit tests for Lambda and deploy preview environments  
 - Use Terraform Cloud or S3 backend for remote state
 
----
 
 ## 🙋‍♂️ About Me
 

@@ -104,4 +104,4 @@ I'm currently focusing on:
 Feel free to connect or check out my live resume:
 
 🔗 [Live Resume](https://resume.nelmer.dev)  
-📧 [Contact Me](mailto:nelson@nelmer.dev)
+📧 [Contact Me](mailto:contact@nelmer.dev)

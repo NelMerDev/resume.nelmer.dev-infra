@@ -61,15 +61,18 @@ This repo includes a GitHub Actions workflow that **automatically uploads your s
 
 ```plaintext
 .
-├── main.tf                 # Root Terraform configuration
-├── variables.tf            # Input variables
-├── outputs.tf              # Outputs for Lambda/API Gateway/S3
+├── main.tf                         # Root Terraform configuration
+├── variables.tf                    # Input variables
+├── outputs.tf                      # Outputs for Lambda/API Gateway/S3
 ├── lambda_functions/
-│   └── VisitorCounter/     # JS Lambda source code for visitor counter
+│   └── CloudflareS3Policy/
+│       └── lambda_function.py      # JS Lambda source code for cloudflare S3 policy updater
+│   └── VisitorCounter/ 
+│       └── lambda_function.py      # JS Lambda source code for visitor counter
 ├── .github/
 │   └── workflows/
-│       └── deploy.yml      # GitHub Actions for CI/CD to S3
-└── README.md               # You're here
+│       └── deploy.yml              # GitHub Actions for CI/CD to S3
+└── README.md                       # You're here
 ```
 
 

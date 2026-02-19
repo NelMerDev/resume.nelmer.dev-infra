@@ -1,11 +1,26 @@
-# Terraform state
+# Terraform local working directory
 .terraform/
-*.tfstate
-*.backup
-.terraform.lock.hcl
-builds/
-*.bk
-outputs.tf
 
-# Zip or build files
+# Terraform state files (never commit)
+*.tfstate
+*.tfstate.*
+*.backup
+crash.log
+
+# Terraform lock file (usually commit this, so DO NOT ignore it)
+# .terraform.lock.hcl
+
+# Variables that often contain secrets (keep examples instead)
+terraform.tfvars
+*.auto.tfvars
+backend.hcl
+
+# Build artifacts
+builds/
 *.zip
+
+# Editor/OS
+.DS_Store
+Thumbs.db
+.vscode/
+*.swp

@@ -6,7 +6,11 @@
 [![Cloud Resume Challenge](https://img.shields.io/badge/Cloud%20Resume%20Challenge-Completed-34D058?style=flat)](https://cloudresumechallenge.dev/)
 [![Website](https://img.shields.io/website?url=https%3A%2F%2Fresume.nelmer.dev)](https://resume.nelmer.dev)
 
-This repository contains the complete **Infrastructure as Code (IaC)** setup using **Terraform** to deploy a production-grade, serverless resume website as part of the [Cloud Resume Challenge](https://cloudresumechallenge.dev/). This project demonstrates my hands-on experience with AWS services, Terraform modules, serverless architecture, CI/CD pipelines, and security best practices.
+This repository contains the **Infrastructure as Code (IaC)** implementation for deploying a production-style, serverless resume website using **Terraform** and **AWS**.
+
+The project demonstrates practical experience designing modular Terraform configurations, implementing secure IAM policies, deploying serverless workloads, and automating infrastructure updates through CI/CD pipelines.
+
+> Originally inspired by the [Cloud Resume Challenge](https://cloudresumechallenge.dev/).
 
 ---
 
@@ -66,9 +70,9 @@ This repo includes a GitHub Actions workflow that **automatically uploads your s
 ├── outputs.tf                      # Outputs for Lambda/API Gateway/S3
 ├── lambda_functions/
 │   └── CloudflareS3Policy/
-│       └── lambda_function.py      # JS Lambda source code for cloudflare S3 policy updater
+│       └── lambda_function.py      # Python Lambda to dynamically update S3 policy with Cloudflare IP ranges
 │   └── VisitorCounter/ 
-│       └── lambda_function.py      # JS Lambda source code for visitor counter
+│       └── lambda_function.py      # Python Lambda for visitor counter (DynamoDB-backed)
 ├── .github/
 │   └── workflows/
 │       └── deploy.yml              # GitHub Actions for CI/CD to S3
@@ -95,16 +99,17 @@ This repo includes a GitHub Actions workflow that **automatically uploads your s
 - Use Terraform Cloud or S3 backend for remote state
 
 
-## 🙋‍♂️ About Me
+## 🔐 Security & Deployment Practices
 
-Hi, I'm **Nelson Mercedes** — a self-motivated Cloud Engineer passionate about automation, DevOps, and clean infrastructure design. This project is part of my portfolio to demonstrate real-world cloud engineering skills.
+- Terraform state is not committed to this repository.
+- Infrastructure is deployed using IAM roles with least-privilege permissions.
+- No AWS credentials or secrets are stored in the codebase.
+- GitHub Actions uses encrypted repository secrets for CI/CD deployment.
+- S3 access policies are dynamically managed based on Cloudflare IP ranges.
 
-I'm currently focusing on:
-- Building scalable, production-ready AWS infrastructure using Terraform and modular design patterns
-- Automating cloud deployments with CI/CD pipelines using GitHub Actions and GitOps principles
-- Developing serverless applications using AWS Lambda, API Gateway, and DynamoDB
+---
 
-Feel free to connect or check out my live resume:
+## 🌐 Live Deployment
 
-🔗 [Live Resume](https://resume.nelmer.dev)  
-📧 [Contact Me](mailto:contact@nelmer.dev)
+🔗 [Live Resume](https://resume.nelmer.dev)
+/config/workspaces/aws-workspace/resume.nelmner.dev

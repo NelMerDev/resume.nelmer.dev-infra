@@ -166,7 +166,7 @@ Using remote state + locking mirrors real-world production Terraform workflows.
 - Terraform state is not committed to this repository.
 - Infrastructure is deployed using IAM roles with least-privilege permissions.
 - No AWS credentials or secrets are stored in the codebase.
-- Frontend deployments use GitHub Actions with encrypted secrets; this repo contains infrastructure code only.
+- Frontend deployments use GitHub Actions with OIDC (no long-lived AWS keys); this repo contains infrastructure code only.
 - S3 access policies are dynamically managed based on Cloudflare IP ranges.
 - Terraform provider versions are locked using `.terraform.lock.hcl` for reproducible deployments.
 - Backend state is encrypted at rest and protected by DynamoDB state locking.

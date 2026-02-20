@@ -1,35 +1,35 @@
-module "vpc" {
-  source  = "terraform-aws-modules/vpc/aws"
-  version = "~> 6.0.1"
+# module "vpc" {
+#   source  = "terraform-aws-modules/vpc/aws"
+#   version = "~> 6.0.1"
 
-  name = var.vpc_name
-  cidr = var.cidr_block
+#   name = var.vpc_name
+#   cidr = var.cidr_block
 
-  azs            = ["us-east-1a", "us-east-1b", "us-east-1c"]
-  public_subnets = ["10.0.0.0/20", "10.0.16.0/20", "10.0.32.0/20"]
-  # private_subnets = ["10.0.100.0/20", "10.0.116.0/20", "10.0.132.0/20"]
+#   azs            = ["us-east-1a", "us-east-1b", "us-east-1c"]
+#   public_subnets = ["10.0.0.0/20", "10.0.16.0/20", "10.0.32.0/20"]
+#   # private_subnets = ["10.0.100.0/20", "10.0.116.0/20", "10.0.132.0/20"]
 
-  enable_dns_support   = true
-  enable_dns_hostnames = true
+#   enable_dns_support   = true
+#   enable_dns_hostnames = true
 
-  tags = {
-    ManagedBy = "Terraform"
-    Project   = "resume.nelmer.dev"
-  }
-}
+#   tags = {
+#     ManagedBy = "Terraform"
+#     Project   = "resume.nelmer.dev"
+#   }
+# }
 
-module "security-group" {
-  source  = "terraform-aws-modules/security-group/aws"
-  version = "5.3.0"
+# module "security-group" {
+#   source  = "terraform-aws-modules/security-group/aws"
+#   version = "5.3.0"
 
-  vpc_id = module.vpc.vpc_id
-  name   = var.sg_name
+#   vpc_id = module.vpc.vpc_id
+#   name   = var.sg_name
 
-  tags = {
-    ManagedBy = "Terraform"
-    Project   = "resume.nelmer.dev"
-  }
-}
+#   tags = {
+#     ManagedBy = "Terraform"
+#     Project   = "resume.nelmer.dev"
+#   }
+# }
 
 module "dynamodb-table" {
   source  = "terraform-aws-modules/dynamodb-table/aws"

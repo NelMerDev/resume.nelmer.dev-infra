@@ -1,10 +1,10 @@
-output "vpc_id" {
-  value = module.vpc.vpc_id
-}
+# output "vpc_id" {
+#   value = module.vpc.vpc_id
+# }
 
-output "sg_id" {
-  value = module.security-group.security_group_id
-}
+# output "sg_id" {
+#   value = module.security-group.security_group_id
+# }
 
 output "visitor-counter_function_arn" {
   value = module.visitor_counter_lambda.lambda_function_arn

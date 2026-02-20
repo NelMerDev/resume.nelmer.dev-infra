@@ -1,5 +1,6 @@
 # ☁️ Cloud Resume Challenge – Terraform Edition
 
+![Terraform CI](https://github.com/NelMerDev/resume.nelmer.dev-infra/actions/workflows/terraform.yml/badge.svg)
 [![Terraform](https://img.shields.io/badge/IaC-Terraform-623CE4?logo=terraform)](https://www.terraform.io/)
 [![AWS](https://img.shields.io/badge/AWS-Deployed-FF9900?logo=amazon-aws)](https://aws.amazon.com/)
 [![Cloud Resume Challenge](https://img.shields.io/badge/Cloud%20Resume%20Challenge-Completed-34D058?style=flat)](https://cloudresumechallenge.dev/)
@@ -7,7 +8,7 @@
 
 This repository contains the **Infrastructure as Code (IaC)** implementation for deploying a production-style, serverless resume website using **Terraform** and **AWS**.
 
-The project demonstrates practical experience designing modular Terraform configurations, implementing least-privilege IAM, and deploying a serverless stack (API Gateway + Lambda + DynamoDB) for a real production endpoint.
+The project demonstrates practical experience designing modular Terraform configurations, implementing least-privilege IAM, and deploying a production-style serverless architecture (API Gateway + Lambda + DynamoDB) supporting a live public endpoint.
 
 
 ## 🔗 Related Repository
@@ -34,15 +35,17 @@ The project demonstrates practical experience designing modular Terraform config
 
 ## 🧱 Architecture Diagram
 
-```plaintext
+```
+[ User ]
+   ↓
 [ Cloudflare DNS + HTTPS ]
-            |
+   ↓
 [ S3 Static Website – resume.nelmer.dev ]
-            |
-[ JavaScript fetch() 
-         -> API Gateway 
-         -> Lambda 
-         -> DynamoDB ]
+   ↓
+[ JavaScript fetch()
+        → API Gateway
+        → Lambda
+        → DynamoDB ]
 ```
 
 
@@ -50,6 +53,8 @@ The project demonstrates practical experience designing modular Terraform config
 
 - Used `terraform-aws-modules` to follow common infrastructure patterns and keep code maintainable.
 - Kept DNS/HTTPS in Cloudflare to match a real-world setup where edge/networking is managed outside AWS.
+- Remote state is managed in S3 with DynamoDB locking for production-style Terraform workflows.
+- Removed unused VPC and security group modules to maintain a minimal, fully serverless, cost-efficient architecture.
 
 
 ## 🛠️ Technologies Used
@@ -67,16 +72,21 @@ The project demonstrates practical experience designing modular Terraform config
 ## ⚙️ CI/CD & Deployment
 
 - The frontend (static resume) is deployed automatically via GitHub Actions in the frontend repository.
-- Infrastructure changes are applied manually using Terraform from the `infra/` directory.
-- Terraform state is intentionally excluded from version control.
-- Terraform is executed from the `infra/` directory to keep infrastructure code isolated from application code.
-- Remote Terraform state (S3 + DynamoDB lock) is planned as a future enhancement.
+- Infrastructure changes are applied manually via Terraform CLI after successful CI validation.
+- Remote Terraform state is stored in:
+  - S3 bucket: `terraform-state.nelmer.dev`
+  - DynamoDB table: `terraform-locks`
+- State locking is enabled to prevent concurrent modification.
+- Terraform state is excluded from version control.
+- This repository includes GitHub Actions CI to enforce:
+  - `terraform fmt -check`
+  - `terraform validate`
+- All pull requests and pushes are validated automatically before infrastructure changes are applied.
 
 
 ## ▶️ How to Deploy (Terraform)
 
 ```bash
-cd infra
 terraform init
 terraform fmt -recursive
 terraform validate
@@ -86,23 +96,48 @@ terraform apply
 > This deploys AWS infrastructure (S3, API Gateway, Lambda, DynamoDB, IAM). DNS/HTTPS is handled in Cloudflare.
 
 
+## 🔒 Terraform Backend Configuration
+
+This project uses **remote state with locking** for production safety.
+
+- **Backend:** S3 (`terraform-state.nelmer.dev`)
+- **State path:** `resume-nelmer-dev-infra/terraform.tfstate`
+- **Locking:** DynamoDB table (`terraform-locks`)
+- **Encryption:** Enabled
+
+### Why this matters
+
+This prevents:
+
+- Accidental state corruption  
+- Concurrent `terraform apply` conflicts  
+- Local state drift  
+- State file loss on local machines  
+
+Using remote state + locking mirrors real-world production Terraform workflows.
+
 ## 📁 Project Structure
 
-```plaintext
+```
 .
-├── infra/
-│   ├── main.tf
-│   ├── providers.tf
-│   ├── variables.tf
-│   ├── outputs.tf
-│   ├── data.tf
-│   └── lambda_functions/
-│       ├── VisitorCounter/
-│       │   └── lambda_function.py
-│       └── CloudflareS3Policy/
-│           └── lambda_function.py
-├── .gitignore
+├── backend.tf
+├── main.tf
+├── providers.tf
+├── variables.tf
+├── outputs.tf
+├── data.tf
+├── lambda_functions/
+│   ├── VisitorCounter/
+│   │   └── lambda_function.py
+│   └── CloudflareS3Policy/
+│       └── lambda_function.py
+├── docs/
+│   └── notes.md
+├── .github/
+│   └── workflows/
+│       └── terraform.yml
 ├── .terraform.lock.hcl
+├── .gitignore
 └── README.md
 ```
 
@@ -123,7 +158,7 @@ terraform apply
 - Add monitoring/alerts (CloudWatch Alarms, Lambda logging, etc.)  
 - Switch to CloudFront + ACM for fully AWS-native HTTPS  
 - Add unit tests for Lambda and deploy preview environments  
-- Use Terraform Cloud or S3 backend for remote state
+- Evaluate Terraform Cloud for remote execution workflows
 
 
 ## 🔐 Security & Deployment Practices
@@ -134,6 +169,12 @@ terraform apply
 - Frontend deployments use GitHub Actions with encrypted secrets; this repo contains infrastructure code only.
 - S3 access policies are dynamically managed based on Cloudflare IP ranges.
 - Terraform provider versions are locked using `.terraform.lock.hcl` for reproducible deployments.
+- Backend state is encrypted at rest and protected by DynamoDB state locking.
+
+
+## 💰 Cost Awareness
+
+This architecture is designed to operate within AWS Free Tier limits under normal traffic conditions.
 
 ---
 

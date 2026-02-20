@@ -2,13 +2,17 @@
 
 [![Terraform](https://img.shields.io/badge/IaC-Terraform-623CE4?logo=terraform)](https://www.terraform.io/)
 [![AWS](https://img.shields.io/badge/AWS-Deployed-FF9900?logo=amazon-aws)](https://aws.amazon.com/)
-[![CI/CD](https://github.com/RomeoNotaLoka/resume.nelmer.dev/actions/workflows/deploy.yml/badge.svg)](https://github.com/RomeoNotaLoka/resume.nelmer.dev/actions)
 [![Cloud Resume Challenge](https://img.shields.io/badge/Cloud%20Resume%20Challenge-Completed-34D058?style=flat)](https://cloudresumechallenge.dev/)
 [![Website](https://img.shields.io/website?url=https%3A%2F%2Fresume.nelmer.dev)](https://resume.nelmer.dev)
 
 This repository contains the **Infrastructure as Code (IaC)** implementation for deploying a production-style, serverless resume website using **Terraform** and **AWS**.
 
-The project demonstrates practical experience designing modular Terraform configurations, implementing secure IAM policies, deploying serverless workloads, and automating infrastructure updates through CI/CD pipelines.
+The project demonstrates practical experience designing modular Terraform configurations, implementing least-privilege IAM, and deploying a serverless stack (API Gateway + Lambda + DynamoDB) for a real production endpoint.
+
+
+## 🔗 Related Repository
+
+- Frontend (static site + CI/CD): https://github.com/NelMerDev/resume.nelmer.dev
 
 > Originally inspired by the [Cloud Resume Challenge](https://cloudresumechallenge.dev/).
 
@@ -16,16 +20,16 @@ The project demonstrates practical experience designing modular Terraform config
 
 ## 🚀 What This Project Deploys
 
-| Component         | Description                                                                 |
+| Component        | Description                                                                 |
 |------------------|-----------------------------------------------------------------------------|
-| **S3**           | Static website hosting for `resume.nelmer.dev` using public-read config     |
+| **S3**           | Static website hosting for `resume.nelmer.dev` (S3 Website endpoint)        |
 | **Cloudflare**   | Manages domain DNS and provides HTTPS (SSL)                                 |
 | **Lambda**       | Updates and returns visitor count via API                                   |
 | **API Gateway**  | HTTP endpoint that triggers the Lambda function                             |
-| **DynamoDB**     | NoSQL database to store visitor count                                        |
+| **DynamoDB**     | NoSQL database to store visitor count                                       |
 | **IAM**          | Least-privilege policies for Lambda, API, and DynamoDB                      |
 | **Terraform**    | Uses official `terraform-aws-modules` for clean, scalable IaC               |
-| **GitHub Actions** | Automatically deploys resume updates to S3 on each commit to `main`       |
+| **GitHub Actions** | Frontend repo deploys the static site to S3; this repo focuses on IaC     |
 
 
 ## 🧱 Architecture Diagram
@@ -42,6 +46,12 @@ The project demonstrates practical experience designing modular Terraform config
 ```
 
 
+## 🧠 Key Decisions
+
+- Used `terraform-aws-modules` to follow common infrastructure patterns and keep code maintainable.
+- Kept DNS/HTTPS in Cloudflare to match a real-world setup where edge/networking is managed outside AWS.
+
+
 ## 🛠️ Technologies Used
 
 - **Terraform** – Infrastructure as Code
@@ -54,29 +64,46 @@ The project demonstrates practical experience designing modular Terraform config
 - **GitHub Actions** – CI/CD for S3 deployment
 
 
-## ⚙️ GitHub Actions CI/CD
+## ⚙️ CI/CD & Deployment
 
-This repo includes a GitHub Actions workflow that **automatically uploads your static resume site to S3** every time you commit to the `main` branch. This keeps your resume live and up to date without manual deployment.
+- The frontend (static resume) is deployed automatically via GitHub Actions in the frontend repository.
+- Infrastructure changes are applied manually using Terraform from the `infra/` directory.
+- Terraform state is intentionally excluded from version control.
+- Terraform is executed from the `infra/` directory to keep infrastructure code isolated from application code.
+- Remote Terraform state (S3 + DynamoDB lock) is planned as a future enhancement.
 
-> CI/CD Workflow File: `.github/workflows/deploy.yml`
+
+## ▶️ How to Deploy (Terraform)
+
+```bash
+cd infra
+terraform init
+terraform fmt -recursive
+terraform validate
+terraform plan
+terraform apply
+```
+> This deploys AWS infrastructure (S3, API Gateway, Lambda, DynamoDB, IAM). DNS/HTTPS is handled in Cloudflare.
 
 
 ## 📁 Project Structure
 
 ```plaintext
 .
-├── main.tf                         # Root Terraform configuration
-├── variables.tf                    # Input variables
-├── outputs.tf                      # Outputs for Lambda/API Gateway/S3
-├── lambda_functions/
-│   └── CloudflareS3Policy/
-│       └── lambda_function.py      # Python Lambda to dynamically update S3 policy with Cloudflare IP ranges
-│   └── VisitorCounter/ 
-│       └── lambda_function.py      # Python Lambda for visitor counter (DynamoDB-backed)
-├── .github/
-│   └── workflows/
-│       └── deploy.yml              # GitHub Actions for CI/CD to S3
-└── README.md                       # You're here
+├── infra/
+│   ├── main.tf
+│   ├── providers.tf
+│   ├── variables.tf
+│   ├── outputs.tf
+│   ├── data.tf
+│   └── lambda_functions/
+│       ├── VisitorCounter/
+│       │   └── lambda_function.py
+│       └── CloudflareS3Policy/
+│           └── lambda_function.py
+├── .gitignore
+├── .terraform.lock.hcl
+└── README.md
 ```
 
 
@@ -104,12 +131,12 @@ This repo includes a GitHub Actions workflow that **automatically uploads your s
 - Terraform state is not committed to this repository.
 - Infrastructure is deployed using IAM roles with least-privilege permissions.
 - No AWS credentials or secrets are stored in the codebase.
-- GitHub Actions uses encrypted repository secrets for CI/CD deployment.
+- Frontend deployments use GitHub Actions with encrypted secrets; this repo contains infrastructure code only.
 - S3 access policies are dynamically managed based on Cloudflare IP ranges.
+- Terraform provider versions are locked using `.terraform.lock.hcl` for reproducible deployments.
 
 ---
 
 ## 🌐 Live Deployment
 
 🔗 [Live Resume](https://resume.nelmer.dev)
-/config/workspaces/aws-workspace/resume.nelmner.dev
